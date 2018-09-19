@@ -1,12 +1,13 @@
 import { handleActions } from 'redux-actions'
 
-import { botInfoReceived } from '~/actions'
+import { botInfoReceived, botChanged } from '~/actions'
 
 const defaultState = {}
 
 const reducer = handleActions(
   {
-    [botInfoReceived]: (state, { payload }) => ({ ...payload })
+    [botInfoReceived]: (state, { payload }) => ({ ...payload }),
+    [botChanged]: (state, { payload }) => ({ ...payload })
   },
   defaultState
 )

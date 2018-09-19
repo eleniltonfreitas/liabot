@@ -160,11 +160,26 @@ export const fetchUser = authEnabled => dispatch => {
 }
 
 // Bot
+export const botsReceived = createAction('BOTS/RECEIVED')
+export const fetchAllBots = () => dispatch => {
+  axios.get('/api/teams/bots').then(res => dispatch(botsReceived(res.data)))
+}
+
 export const botInfoReceived = createAction('BOT/INFO_RECEIVED')
 export const fetchBotInformation = () => dispatch => {
   axios.get('/api/bot/information').then(information => {
     dispatch(botInfoReceived(information.data))
   })
+}
+
+export const botChanged = createAction('BOT/CHANGED')
+export const changeBot = value => dispatch => {
+  if (window.BOTPRESS_XX) {
+    axios.defaults.headers.common['X-API-Bot-Id'] = value
+    axios.get('/api/bot/information').then(information => {
+      dispatch(botChanged(information.data))
+    })
+  }
 }
 
 // Modules

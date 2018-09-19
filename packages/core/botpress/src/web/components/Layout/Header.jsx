@@ -11,10 +11,17 @@ import { logout } from '~/util/Auth'
 import style from './Header.scss'
 import { viewModeChanged } from '~/actions'
 import PermissionsChecker from './PermissionsChecker'
+import Select from 'react-select'
+import { fetchAllBots, changeBot, fetchBotInformation } from '../../actions'
+import _ from 'lodash'
 
 class Header extends React.Component {
   state = {
     loading: true
+  }
+
+  componentDidMount() {
+    this.props.fetchAllBots()
   }
 
   handleFullscreen = () => {
@@ -40,6 +47,38 @@ class Header extends React.Component {
           <b>Logout</b>
         </MenuItem>
       </NavDropdown>
+    )
+  }
+
+  renderBotSelect() {
+    if (!window.BOTPRESS_XX) {
+      return null
+    }
+
+    const formatGroupLabel = data => (
+      <div>
+        <span>{data.label}</span>
+        <span>{data.options.length}</span>
+      </div>
+    )
+
+    const groupedOptions = []
+    const groupedBots = _.groupBy(this.props.bots, 'team')
+    for (const team of Object.keys(groupedBots)) {
+      const bots = []
+      for (const bot of groupedBots[team]) {
+        const botOptions = { value: bot.id, label: bot.name }
+        bots.push(botOptions)
+      }
+      groupedOptions.push({ options: bots, label: team })
+    }
+
+    return (
+      <Select
+        options={groupedOptions}
+        formatGroupLabel={formatGroupLabel}
+        onChange={option => this.props.changeBot(option.value)}
+      />
     )
   }
 
@@ -72,6 +111,7 @@ class Header extends React.Component {
             <PermissionsChecker user={this.props.user} res="bot.notifications" op="read">
               <NotificationHub />
             </PermissionsChecker>
+            {this.renderBotSelect()}
             {this.renderLogoutButton()}
           </Nav>
           <Nav pullRight className="bp-navbar-module-buttons" />
@@ -84,9 +124,11 @@ class Header extends React.Component {
 const mapStateToProps = state => ({
   user: state.user,
   viewMode: state.ui.viewMode,
-  customStyle: state.ui.customStyle
+  customStyle: state.ui.customStyle,
+  bots: state.bots
 })
 
-const mapDispatchToProps = dispatch => bindActionCreators({ viewModeChanged }, dispatch)
+const mapDispatchToProps = dispatch =>
+  bindActionCreators({ viewModeChanged, fetchAllBots, fetchBotInformation, changeBot }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Header)

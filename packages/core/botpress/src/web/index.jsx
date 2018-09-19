@@ -14,7 +14,7 @@ import store from './store'
 
 require('bootstrap/dist/css/bootstrap.css')
 require('storm-react-diagrams/dist/style.min.css')
-require('react-select/dist/react-select.css')
+// require('react-select/dist/react-select.css')
 require('./theme.scss')
 
 const token = getToken()
