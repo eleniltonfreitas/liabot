@@ -42,7 +42,6 @@ export default class SelectActionDropdown extends Component {
         onInputChange={inputValue => (this._inputValue = inputValue)}
         onChange={this.props.onChange}
         options={options}
-        value={this.props.value}
         optionRenderer={this.renderOption}
       />
     )

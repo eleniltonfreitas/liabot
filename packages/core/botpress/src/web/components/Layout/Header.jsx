@@ -55,13 +55,6 @@ class Header extends React.Component {
       return null
     }
 
-    const formatGroupLabel = data => (
-      <div>
-        <span>{data.label}</span>
-        <span>{data.options.length}</span>
-      </div>
-    )
-
     const groupedOptions = []
     const groupedBots = _.groupBy(this.props.bots, 'team')
     for (const team of Object.keys(groupedBots)) {
@@ -76,8 +69,10 @@ class Header extends React.Component {
     return (
       <Select
         options={groupedOptions}
-        formatGroupLabel={formatGroupLabel}
-        onChange={option => this.props.changeBot(option.value)}
+        onChange={option => {
+          this.props.changeBot(option.value)
+          return option
+        }}
       />
     )
   }
